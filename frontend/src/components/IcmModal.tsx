@@ -98,7 +98,7 @@ const IcmModal: React.FC<IcmModalProps> = ({
                     </span>
                   </div>
                   <div className="match-description">
-                    {item.case.Description?.substring(0, 150)}...
+                    {item.case.CaseDescription?.substring(0, 150)}...
                   </div>
                 </div>
               </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CaseForm from './components/CaseForm';
 import SuggestionsPanel from './components/SuggestionsPanel';
 import FlagNotification from './components/FlagNotification';
@@ -13,8 +13,6 @@ function App() {
   const [suggestions, setSuggestions] = useState<SimilarCase[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [hasAlert, setHasAlert] = useState(false);
-  const [alertCount, setAlertCount] = useState(0);
   const [recommendationData, setRecommendationData] = useState<RecommendationResponse | null>(
     null
   );
@@ -42,12 +40,6 @@ function App() {
       setRecommendationData(response);
       setSuggestions(response.similar_cases);
       setShowSuggestions(true);
-
-      // Set alert state based on threshold
-      if (response.alert_threshold_reached) {
-        setHasAlert(true);
-        setAlertCount(response.similar_cases.filter((c) => c.similarity_score >= 0.75).length);
-      }
 
       // Show modal if ICM recommendation threshold is met
       if (response.recommend_icm) {
@@ -89,8 +81,6 @@ function App() {
       // Reset states
       setSuggestions([]);
       setShowSuggestions(false);
-      setHasAlert(false);
-      setAlertCount(0);
       setRecommendationData(null);
       setPendingCaseData(null);
     } catch (error) {
@@ -111,13 +101,9 @@ function App() {
     // Pre-fill the form with data from the most similar case
     if (suggestions.length > 0) {
       const topCase = suggestions[0].case;
-      setShowToast(`Duplicating ICM #${topCase.CaseID} - ${topCase.CaseTitle}`, 'info');
+      showToast(`Duplicating ICM #${topCase.CaseID} - ${topCase.CaseTitle}`, 'success');
       setShowEscalateForm(true);
     }
-  };
-
-  const handleBellClick = () => {
-    setShowSuggestions(!showSuggestions);
   };
 
   const handleFlagClick = () => {
@@ -126,94 +112,43 @@ function App() {
       const mockSuggestions: SimilarCase[] = [
         {
           case: {
-            CaseID: 'ICM-2024-001234',
+            CaseID: 1234,
             CaseTitle: 'Azure SQL Database Connection Timeout Issues',
-            CaseDescription: 'Multiple users experiencing connection timeouts when accessing Azure SQL Database',
-            Description: 'Multiple users experiencing connection timeouts when accessing Azure SQL Database. Issue started after recent deployment. Error occurs consistently during peak hours.',
+            CaseDescription: 'Multiple users experiencing connection timeouts when accessing Azure SQL Database. Issue started after recent deployment. Error occurs consistently during peak hours.',
             Product: 'Azure SQL Database',
+            Priority: 'High',
             Severity: '2',
             CaseStatus: 'Active',
             CreatedDate: '2024-01-15T10:30:00Z',
-            ErrorMessage: 'Connection timeout',
-            StackTrace: '',
-            Region: 'East US',
-            SubscriptionID: 'sub-12345',
-            ResourceGroup: 'prod-rg',
-            AffectedResource: 'sql-prod-db',
-            ImpactedUsers: 150,
-            BusinessImpact: 'High',
-            CustomerSegment: 'Enterprise',
-            SupportTier: 'Premier',
-            EngagementType: 'Critical',
-            EscalationLevel: 2,
-            RelatedICMs: '',
-            RootCause: '',
-            MitigationSteps: '',
-            Resolution: '',
-            PreventionPlan: '',
-            Tags: 'sql,timeout,performance'
+            ErrorMessage: 'Connection timeout'
           },
           similarity_score: 0.87
         },
         {
           case: {
-            CaseID: 'ICM-2024-001156',
+            CaseID: 1156,
             CaseTitle: 'Database Performance Degradation in Production',
-            CaseDescription: 'Significant slowdown in database queries affecting application performance',
-            Description: 'Significant slowdown in database queries affecting application performance. CPU usage at 95%. Query execution time increased by 300%.',
+            CaseDescription: 'Significant slowdown in database queries affecting application performance. CPU usage at 95%. Query execution time increased by 300%.',
             Product: 'Azure SQL Database',
+            Priority: 'High',
             Severity: '2',
             CaseStatus: 'Resolved',
             CreatedDate: '2024-01-10T08:15:00Z',
-            ErrorMessage: 'Query timeout',
-            StackTrace: '',
-            Region: 'East US',
-            SubscriptionID: 'sub-12345',
-            ResourceGroup: 'prod-rg',
-            AffectedResource: 'sql-prod-db',
-            ImpactedUsers: 200,
-            BusinessImpact: 'High',
-            CustomerSegment: 'Enterprise',
-            SupportTier: 'Premier',
-            EngagementType: 'Critical',
-            EscalationLevel: 2,
-            RelatedICMs: '',
-            RootCause: 'Index fragmentation',
-            MitigationSteps: 'Rebuilt indexes',
-            Resolution: 'Performance restored after index maintenance',
-            PreventionPlan: 'Implement automated index maintenance',
-            Tags: 'sql,performance,database'
+            ErrorMessage: 'Query timeout'
           },
           similarity_score: 0.82
         },
         {
           case: {
-            CaseID: 'ICM-2024-000987',
+            CaseID: 987,
             CaseTitle: 'Azure SQL High CPU Usage Alert',
-            CaseDescription: 'Database experiencing sustained high CPU utilization',
-            Description: 'Database experiencing sustained high CPU utilization. Multiple blocking queries detected. Application response time degraded.',
+            CaseDescription: 'Database experiencing sustained high CPU utilization. Multiple blocking queries detected. Application response time degraded.',
             Product: 'Azure SQL Database',
+            Priority: 'Medium',
             Severity: '3',
             CaseStatus: 'Resolved',
             CreatedDate: '2024-01-05T14:20:00Z',
-            ErrorMessage: 'High CPU',
-            StackTrace: '',
-            Region: 'East US',
-            SubscriptionID: 'sub-12345',
-            ResourceGroup: 'prod-rg',
-            AffectedResource: 'sql-prod-db',
-            ImpactedUsers: 100,
-            BusinessImpact: 'Medium',
-            CustomerSegment: 'Enterprise',
-            SupportTier: 'Standard',
-            EngagementType: 'Standard',
-            EscalationLevel: 1,
-            RelatedICMs: '',
-            RootCause: 'Inefficient queries',
-            MitigationSteps: 'Query optimization',
-            Resolution: 'Optimized problematic queries',
-            PreventionPlan: 'Implement query monitoring',
-            Tags: 'sql,cpu,performance'
+            ErrorMessage: 'High CPU'
           },
           similarity_score: 0.79
         }
