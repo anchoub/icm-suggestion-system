@@ -166,11 +166,27 @@ async def recommend_icm(
         # Analyze results
         analysis = SimilarityService.analyze_similarities(similarities)
         
+        # Get ICM statistics if recommend_icm is true
+        icm_stats = None
+        if analysis["recommend_icm"] and similar_cases:
+            similar_case_ids = [sc.case.CaseID for sc in similar_cases]
+            stats_data = CaseRepository.get_icm_statistics(db, similar_case_ids, months=6)
+            
+            from models import ICMStatistics
+            icm_stats = ICMStatistics(
+                total_similar_cases_reviewed=stats_data["total_similar_cases_reviewed"],
+                cases_with_icm=stats_data["cases_with_icm"],
+                average_delay_days=round(stats_data["average_delay_days"], 1),
+                confidence_score=round(analysis["max_score"] * 100, 1),
+                review_period_months=6
+            )
+        
         return RecommendationResponse(
             similar_cases=similar_cases,
             alert_threshold_reached=analysis["alert"],
             recommend_icm=analysis["recommend_icm"],
-            highest_similarity=analysis["max_score"]
+            highest_similarity=analysis["max_score"],
+            icm_statistics=icm_stats
         )
         
     except Exception as e:

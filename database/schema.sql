@@ -39,6 +39,12 @@ CREATE TABLE icm.Cases (
     CreatedDate DATETIME DEFAULT GETDATE() NOT NULL,
     ModifiedDate DATETIME,
     
+    -- ICM Tracking Fields
+    ICMNumber NVARCHAR(100),
+    ICMOpenedDate DATETIME,
+    ICMDescription NVARCHAR(MAX),
+    DaysDelayedBeforeICM INT,
+    
     -- Constraints
     CONSTRAINT CK_Cases_Severity CHECK (Severity IN ('Critical', 'High', 'Medium', 'Low')),
     CONSTRAINT CK_Cases_Status CHECK (CaseStatus IN ('Open', 'In Progress', 'Resolved', 'Closed', 'Pending'))

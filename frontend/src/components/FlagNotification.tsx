@@ -23,11 +23,10 @@ const FlagNotification: React.FC<FlagNotificationProps> = ({ onClick, alertCount
         )}
       </div>
       <div className="flag-tooltip">
-        <div className="tooltip-header">⚠️ ICM Recommended</div>
+        <div className="tooltip-header">ICM Alert</div>
         <div className="tooltip-content">
+          <p>A review of cases from the past 6 months showed {alertCount} similar scenario{alertCount !== 1 ? 's' : ''} where ICM{alertCount !== 1 ? 's were' : ' was'} opened.</p>
           <p><strong>Confidence Score:</strong> {(highestScore * 100).toFixed(0)}%</p>
-          <p><strong>Similar Cases:</strong> {alertCount}</p>
-          <p className="tooltip-action">Click to view details</p>
         </div>
       </div>
     </div>

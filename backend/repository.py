@@ -17,7 +17,8 @@ class CaseRepository:
                 CustomerTier, SLAImpact, Environment, Region, Tenant, ErrorCodes,
                 ErrorMessage, StackTrace, AttachmentsJson, LogLinksJson,
                 TroubleshootingSteps, CaseStatus, ResolutionNotes, AssignedTeam,
-                AssignedTo, Account, Tags, CreatedDate
+                AssignedTo, Account, Tags, ICMNumber, ICMOpenedDate, ICMDescription,
+                DaysDelayedBeforeICM, CreatedDate
             )
             OUTPUT INSERTED.*
             VALUES (
@@ -25,7 +26,8 @@ class CaseRepository:
                 :CustomerTier, :SLAImpact, :Environment, :Region, :Tenant, :ErrorCodes,
                 :ErrorMessage, :StackTrace, :AttachmentsJson, :LogLinksJson,
                 :TroubleshootingSteps, :CaseStatus, :ResolutionNotes, :AssignedTeam,
-                :AssignedTo, :Account, :Tags, GETDATE()
+                :AssignedTo, :Account, :Tags, :ICMNumber, :ICMOpenedDate, :ICMDescription,
+                :DaysDelayedBeforeICM, GETDATE()
             )
         """)
         
@@ -131,3 +133,41 @@ class CaseRepository:
         result = db.execute(query, {"case_id": case_id})
         db.commit()
         return result.rowcount > 0
+    
+    @staticmethod
+    def get_icm_statistics(db: Session, similar_case_ids: List[int], months: int = 6) -> dict:
+        """Get ICM statistics for similar cases from the last N months"""
+        if not similar_case_ids:
+            return {
+                "total_similar_cases_reviewed": 0,
+                "cases_with_icm": 0,
+                "average_delay_days": 0.0
+            }
+        
+        case_ids_str = ','.join(map(str, similar_case_ids))
+        
+        query = text(f"""
+            SELECT 
+                COUNT(*) as total_cases,
+                COUNT(ICMNumber) as cases_with_icm,
+                AVG(CAST(DaysDelayedBeforeICM as FLOAT)) as avg_delay
+            FROM icm.Cases
+            WHERE CaseID IN ({case_ids_str})
+                AND CreatedDate >= DATEADD(MONTH, -{months}, GETDATE())
+        """)
+        
+        result = db.execute(query)
+        row = result.fetchone()
+        
+        if row:
+            return {
+                "total_similar_cases_reviewed": row.total_cases or 0,
+                "cases_with_icm": row.cases_with_icm or 0,
+                "average_delay_days": float(row.avg_delay) if row.avg_delay else 0.0
+            }
+        
+        return {
+            "total_similar_cases_reviewed": 0,
+            "cases_with_icm": 0,
+            "average_delay_days": 0.0
+        }

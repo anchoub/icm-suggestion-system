@@ -35,11 +35,20 @@ export interface SimilarCase {
   similarity_score: number;
 }
 
+export interface ICMStatistics {
+  total_similar_cases_reviewed: number;
+  cases_with_icm: number;
+  average_delay_days: number;
+  confidence_score: number;
+  review_period_months: number;
+}
+
 export interface RecommendationResponse {
   similar_cases: SimilarCase[];
   alert_threshold_reached: boolean;
   recommend_icm: boolean;
   highest_similarity: number;
+  icm_statistics?: ICMStatistics;
 }
 
 export interface RecommendationRequest {

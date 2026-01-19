@@ -27,6 +27,10 @@ class CaseBase(BaseModel):
     AssignedTo: Optional[str] = Field(None, max_length=100)
     Account: Optional[str] = Field(None, max_length=100)
     Tags: Optional[str] = None
+    ICMNumber: Optional[str] = Field(None, max_length=100)
+    ICMOpenedDate: Optional[datetime] = None
+    ICMDescription: Optional[str] = None
+    DaysDelayedBeforeICM: Optional[int] = None
 
 
 class CaseCreate(CaseBase):
@@ -56,11 +60,20 @@ class RecommendationRequest(BaseModel):
     top_k: int = Field(5, ge=1, le=20)
 
 
+class ICMStatistics(BaseModel):
+    total_similar_cases_reviewed: int
+    cases_with_icm: int
+    average_delay_days: float
+    confidence_score: float
+    review_period_months: int = 6
+
+
 class RecommendationResponse(BaseModel):
     similar_cases: List[SimilarCase]
     alert_threshold_reached: bool  # >= 0.75
     recommend_icm: bool  # >= 0.80
     highest_similarity: float
+    icm_statistics: Optional[ICMStatistics] = None
 
 
 class HealthResponse(BaseModel):

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SimilarCase } from '../types';
+import { SimilarCase, ICMStatistics } from '../types';
 import '../styles/IcmModal.css';
 
 interface IcmModalProps {
@@ -10,6 +10,7 @@ interface IcmModalProps {
   similarCases: SimilarCase[];
   highestSimilarity: number;
   recommendIcm: boolean;
+  icmStatistics?: ICMStatistics;
 }
 
 const IcmModal: React.FC<IcmModalProps> = ({
@@ -20,6 +21,7 @@ const IcmModal: React.FC<IcmModalProps> = ({
   similarCases,
   highestSimilarity,
   recommendIcm,
+  icmStatistics,
 }) => {
   if (!isOpen) return null;
 
@@ -31,14 +33,32 @@ const IcmModal: React.FC<IcmModalProps> = ({
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <div className="warning-icon">⚠️</div>
-          <h2>ICM Recommendation Alert</h2>
+          <div className="warning-icon">💡</div>
+          <h2>ICM Alert</h2>
           <button className="modal-close" onClick={onClose}>
             ×
           </button>
         </div>
 
         <div className="modal-body">
+          {/* ICM Statistics Banner */}
+          {icmStatistics && (
+            <div className="icm-statistics-banner">
+              <div className="statistics-header">
+                <h3>📊➡️💡 Data-Driven Insights</h3>
+              </div>
+              <div className="statistics-content">
+                <p className="statistics-text">
+                  A review of cases from the past 6 months showed <strong className="highlight-number">{icmStatistics.cases_with_icm}</strong> similar scenario{icmStatistics.cases_with_icm !== 1 ? 's' : ''} where ICM{icmStatistics.cases_with_icm !== 1 ? 's were' : ' was'} opened. 
+                  The resulting average delay of about <strong className="highlight-number">{icmStatistics.average_delay_days}</strong> days points to a valuable opportunity to strengthen early identification of ICM requirements going forward.
+                </p>
+                <p className="confidence-text">
+                  <strong>Confidence Score:</strong> <span className="confidence-score">{icmStatistics.confidence_score}%</span>
+                </p>
+              </div>
+            </div>
+          )}
+
           <div className="alert-reasons">
             <h3>Reasons for ICM Recommendation:</h3>
             <ul>
@@ -65,12 +85,6 @@ const IcmModal: React.FC<IcmModalProps> = ({
                   </div>
                 </li>
               )}
-              <li className="reason-duplicate">
-                <span className="reason-icon">⚠️</span>
-                <div>
-                  <strong>Duplicate Risk:</strong> Creating an ICM may result in duplicate incidents
-                </div>
-              </li>
             </ul>
           </div>
 

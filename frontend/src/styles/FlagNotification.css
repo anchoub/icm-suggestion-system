@@ -1,66 +1,70 @@
 .flag-notification {
-  position: fixed;
-  top: 20px;
-  right: 20px;
+  position: relative;
   cursor: pointer;
-  z-index: 1000;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0;
   animation: pulse 2s ease-in-out infinite;
 }
 
 .flag-icon {
   position: relative;
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #1e90ff 0%, #0066cc 100%);
-  border-radius: 50%;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(30, 144, 255, 0.4);
-  transition: all 0.3s ease;
+  background: rgba(30, 144, 255, 0.1);
+  border-radius: 4px;
+  color: #1e90ff;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
 }
 
 .flag-icon svg {
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
 }
 
 .flag-icon:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(30, 144, 255, 0.6);
+  background: rgba(30, 144, 255, 0.2);
+  border-left-color: #1e90ff;
 }
 
 .flag-badge {
   position: absolute;
-  top: -5px;
-  right: -5px;
+  top: 4px;
+  right: 4px;
   background: #dc3545;
   color: #fff;
   font-weight: bold;
-  font-size: 12px;
-  padding: 2px 6px;
+  font-size: 10px;
+  padding: 2px 5px;
   border-radius: 10px;
-  min-width: 20px;
+  min-width: 16px;
   text-align: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  line-height: 1;
 }
 
 .flag-tooltip {
   position: absolute;
-  right: 70px;
+  left: 60px;
   top: 0;
-  background: linear-gradient(135deg, rgba(30, 144, 255, 0.95) 0%, rgba(0, 102, 204, 0.95) 100%);
-  backdrop-filter: blur(10px);
+  background: #ffffff;
   border-radius: 8px;
   padding: 12px;
-  box-shadow: 0 4px 12px rgba(30, 144, 255, 0.4);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 2px solid #1e90ff;
   min-width: 250px;
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
-  transform: translateX(10px);
+  transform: translateX(-10px);
+  z-index: 10000;
 }
 
 .flag-notification:hover .flag-tooltip {
@@ -71,30 +75,30 @@
 
 .tooltip-header {
   font-size: 14px;
-  font-weight: 600;
-  color: #ffffff;
+  font-weight: 700;
+  color: #000000;
   margin-bottom: 8px;
   padding-bottom: 6px;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+  border-bottom: 2px solid #1e90ff;
 }
 
 .tooltip-content p {
   margin: 6px 0;
   font-size: 13px;
-  color: #ffffff;
-  line-height: 1.4;
+  color: #000000;
+  line-height: 1.5;
 }
 
 .tooltip-content strong {
-  color: #fff;
+  color: #000000;
   font-weight: 600;
 }
 
 .tooltip-action {
   margin-top: 8px;
   padding-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
-  color: #ffffff !important;
+  border-top: 1px solid #1e90ff;
+  color: #000000 !important;
   font-weight: 500;
   font-style: italic;
   font-size: 12px;

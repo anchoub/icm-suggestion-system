@@ -159,7 +159,14 @@ function App() {
         similar_cases: mockSuggestions,
         highest_similarity: 0.87,
         alert_threshold_reached: true,
-        recommend_icm: true
+        recommend_icm: true,
+        icm_statistics: {
+          total_similar_cases_reviewed: 3,
+          cases_with_icm: 3,
+          average_delay_days: 5.3,
+          confidence_score: 87.0,
+          review_period_months: 6
+        }
       });
     }
     setShowModal(true);
@@ -179,12 +186,14 @@ function App() {
     >
       {!showEscalateForm ? (
         <>
-          {/* ICM Notification - Always show for demo */}
-          <FlagNotification 
-            onClick={handleFlagClick}
-            alertCount={3}
-            highestScore={0.87}
-          />
+          {/* Left Sidebar */}
+          <div className="left-sidebar">
+            <FlagNotification 
+              onClick={handleFlagClick}
+              alertCount={3}
+              highestScore={0.87}
+            />
+          </div>
 
           {/* Hidden overlay for case form - only show when needed */}
           {showSuggestions && (
@@ -208,6 +217,7 @@ function App() {
             similarCases={suggestions}
             highestSimilarity={recommendationData?.highest_similarity || 0}
             recommendIcm={recommendationData?.recommend_icm || false}
+            icmStatistics={recommendationData?.icm_statistics}
           />
 
           {toast && <div className={`toast ${toast.type}`}>{toast.message}</div>}
